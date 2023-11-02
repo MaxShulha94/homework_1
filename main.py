@@ -1,20 +1,12 @@
 def parse(query: str) -> dict:
     query_dict = {}
-
-    if 'name' in query:
-        query = (query.split('?')[1])
-        if query:
-            keys_values = query.split('&')
-            for items in keys_values:
-                if items == '':
-                    keys_values.remove(items)
-                else:
-                    key, value = items.split('=')
-
-                    query_dict[key] = value
-            return query_dict
-    else:
-        return query_dict
+    if '?' in query:
+        query_params = query.split('?')[1].split('&')
+        for param in query_params:
+            if '=' in param:
+                key, value = param.split('=')
+                query_dict[key] = value
+    return query_dict
 
 
 if __name__ == '__main__':
@@ -27,19 +19,15 @@ if __name__ == '__main__':
 
 def parse_cookie(query: str) -> dict:
     parse_dict = {}
-    if query == '':
-        return {}
-    else:
-        query = (query.split(';'))
-        for items in query:
-            if items == '':
-                query.remove(items)
-            else:
-                symbol = items.find('=')
-                key = items[:symbol]
-                value = items.replace('=', ' ', 1).split(' ')[1]
+    if query:
+        pairs = query.split(';')
+        for pair in pairs:
+            key_value = pair.strip().split('=')
+            if len(key_value) >= 2:
+                key = key_value[0].strip()
+                value = '='.join(key_value[1:]).strip()
                 parse_dict[key] = value
-        return parse_dict
+    return parse_dict
 
 
 if __name__ == '__main__':
